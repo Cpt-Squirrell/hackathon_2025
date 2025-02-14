@@ -1,14 +1,8 @@
-import http from 'http';
-
-const hostname = '127.0.0.1';
+const express = require('express');
+const app = express();
 const port = 3000;
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello, World!');
-});
-
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+app.get( '/', (_, res) => res.sendFile(__dirname + "/index.html"));
+app.all( '/teapot', (_, response) => response.sendStatus(418) );
+app.use( (_, response) => response.sendStatus(404) );
+app.listen(port, () => { console.log(`Listening on port ${port}\n`) });

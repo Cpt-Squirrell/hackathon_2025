@@ -8,9 +8,8 @@
     },
     "repository": {
         "type": "git",
-        "url": "test"
+        "url": "https://github.com/Cpt-Squirrell/hackathon_2025"
     },
-    "type": "module",
     "keywords": [
         "spyfall",
         "lan",
@@ -19,6 +18,7 @@
     "author": "Arcti Steel",
     "license": "ISC",
     "dependencies": {
+        "express": "^4.21.2",
         "random": "^5.1.1"
     }
 }
