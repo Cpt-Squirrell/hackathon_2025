@@ -17,5 +17,8 @@
         "offline"
     ],
     "author": "Arcti Steel",
-    "license": "ISC"
+    "license": "ISC",
+    "dependencies": {
+        "random": "^5.1.1"
+    }
 }
