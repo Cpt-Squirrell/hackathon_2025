@@ -1,20 +1,21 @@
 {
-  "name": "spyfall_offline",
-  "version": "0.0.1",
-  "description": "An entirely offline version of Spyfall.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "test"
-  },
-  "keywords": [
-    "spyfall",
-    "lan",
-    "offline"
-  ],
-  "author": "Arcti Steel",
-  "license": "ISC"
+    "name": "spyfall_offline",
+    "version": "0.0.1",
+    "description": "An entirely offline version of Spyfall.",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "test"
+    },
+    "type": "module",
+    "keywords": [
+        "spyfall",
+        "lan",
+        "offline"
+    ],
+    "author": "Arcti Steel",
+    "license": "ISC"
 }
