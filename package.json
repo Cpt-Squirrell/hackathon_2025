@@ -15,6 +15,7 @@
         "lan",
         "offline"
     ],
+    "type": "module",
     "author": "Arcti Steel",
     "license": "ISC",
     "dependencies": {
