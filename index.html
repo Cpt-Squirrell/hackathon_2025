@@ -1,22 +1,51 @@
 <html>
-
-	<head>
-		<title>Spyfall</title>
-		<style>
-			body{
-				padding: 5%;
+<head>
+	<title>Spyfall</title>
+	<style>
+		body {
+			padding: 5%;
+		}
+	</style>
+	<script>
+		function StartGame() {
+			const lobby = document.getElementById("lobby").value;
+			const player = document.getElementById("player").value;
+			const contestants = document.getElementById("contestants").value;
+			let request = new XMLHttpRequest();
+			request.onreadystatechange = function () {
+				if (request.readyState != XMLHttpRequest.DONE || request.status != 200) { return }
+				const data = JSON.parse(request.response);
+				console.log(data);
+				const newLobby = data.lobby;
+				const location = data.location;
+				const role = data.role;
+				const locationSpan = document.getElementById("location");
+				const roleSpan = document.getElementById("role");
+				locationSpan.innerText = location;
+				roleSpan.innerText = role;
+				document.getElementById("lobby").value = newLobby;
 			}
-		</style>
-	</head>
+			request.open("POST", "/");
+			request.setRequestHeader("Content-type", "application/json");
+			request.send(JSON.stringify({"lobby": lobby, "player": player, "contestants": contestants}));
+		}
 
-	<body>
-		<h1>Spyfall</h1>
-		<form method="post">
-			<input name="lobby" type="text" placeholder="Lobby ID"\>
-			<input name="player" type="text" placeholder="Player ID"\>
-			<input name="contestants" type="text" placeholder="Nr. of players"\>
-			<input type="submit" value="Enter game"\>
-		</form>
-	</body>
+	</script>
+</head>
 
+<body>
+	<h1>Spyfall</h1>
+	<form method="post" onsubmit="StartGame(); return false">
+		<input id="lobby" name="lobby" type="text" placeholder="Lobby ID" \>
+		<input id="player" name="player" type="text" placeholder="Player ID" \>
+		<input id="contestants" name="contestants" type="text" placeholder="Nr. of players" \>
+		<input type="submit" value="Start new game" \>
+	</form>
+	<hr>
+	<b>Location: </b>
+	<span id="location"></span>
+	<br>
+	<b> Role: </b>
+	<span id="role"></span>
+</body>
 </html>

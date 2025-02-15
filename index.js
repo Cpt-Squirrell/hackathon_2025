@@ -1,32 +1,9 @@
 import { Random } from 'random';
 import express from 'express';
+import fs from 'node:fs';
 const app = express();
 const encoder = new TextEncoder();
-
-const locations = {
-    "School": [
-        "Teacher",
-        "Student",
-        "Janitor",
-        "Principal",
-        "Nurse",
-        "Assistant",
-        "Student",
-        "Student",
-        "Student",
-    ],
-    "Prison": [
-        "Prisoner", 
-        "Guard", 
-        "Warden", 
-        "Guard Dog", 
-        "Lunch Lady", 
-        "Tower Lookout",
-        "Lvl 100 Mafia Boss",
-        "Lvl 110 Sneak Inmate",
-        "Lvl -2 Crook"
-    ]
-};
+const locations = JSON.parse(fs.readFileSync(import.meta.dirname + "/locations.json"));
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -41,24 +18,24 @@ function StartGame(request, response) {
 	const lobby = request.body.lobby;
 	const player = Number(request.body.player);
 	const contestants = Number(request.body.contestants);
-    
+    let lobbyBytes = encoder.encode(lobby);
     let lobbyID = 1;
-    encoder.encode(lobby).forEach((byte) => {lobbyID *= byte});
+	lobbyBytes.forEach((byte) => { lobbyID *= byte });
     const rng = new Random(lobbyID);
-    const spy = rng.int(0, contestants - 1);
+    lobbyBytes = lobbyBytes.map((_) => { return rng.int(48, 122) });
+    const spy = rng.int(1, contestants);
     const location = Object.keys(locations).at(rng.int(0, Object.keys(locations).length - 1));
 	const locationLength = Object.values(locations[location]).length;
 	let roleID = rng.int(0, locationLength - 1) + player;
-	while (roleID > locationLength) { roleID -= locationLength };
+	while (roleID >= locationLength) { roleID -= locationLength };
     const role = Object.values(locations[location]).at(roleID);
+	
+	console.log(`${location}: ${role} (Spy: ${spy})`);
 	
     if (spy == player) {
 		// IS SPY!
-		// response.json({"location": "unknown", "role": "spy"});
+		return response.json({"lobby": String.fromCharCode.apply(null, lobbyBytes), "location": "unknown", "role": "spy"});
     }
     
-    console.log(`${location}: ${role} (Spy: ${spy})`);
-    console.log(roleID);
-    
-    response.json({"location": location, "role": role});
+    return response.json({"lobby": String.fromCharCode.apply(null, lobbyBytes), "location": location, "role": role});
 }
