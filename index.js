@@ -29,13 +29,12 @@ function StartGame(request, response) {
 	let roleID = rng.int(0, locationLength - 1) + player;
 	while (roleID >= locationLength) { roleID -= locationLength };
     const role = Object.values(locations[location]).at(roleID);
-	
 	console.log(`${location}: ${role} (Spy: ${spy})`);
-	
-    if (spy == player) {
-		// IS SPY!
-		return response.json({"lobby": String.fromCharCode.apply(null, lobbyBytes), "location": "unknown", "role": "spy"});
-    }
     
-    return response.json({"lobby": String.fromCharCode.apply(null, lobbyBytes), "location": location, "role": role});
+    return response.json({
+    	"lobby": String.fromCharCode.apply(null, lobbyBytes),
+    	"location": spy == player ? "Unknown" : location,
+    	"role": spy == player ? "Spy" : role,
+    	"locations": Object.keys(locations)
+    });
 }

@@ -5,6 +5,10 @@
 		body {
 			padding: 5%;
 		}
+		
+		.hidden {
+			display: none;
+		}
 	</style>
 	<script>
 		function StartGame() {
@@ -19,11 +23,22 @@
 				const newLobby = data.lobby;
 				const location = data.location;
 				const role = data.role;
+				const locations = data.locations;
 				const locationSpan = document.getElementById("location");
 				const roleSpan = document.getElementById("role");
 				locationSpan.innerText = location;
 				roleSpan.innerText = role;
 				document.getElementById("lobby").value = newLobby;
+				document.getElementById("locationTitle").classList.remove("hidden");
+				document.getElementById("roleTitle").classList.remove("hidden");
+				const locationList = document.getElementById("locations");
+				console.log(locations);
+				locationList.innerHTML = "";
+				locations.forEach((loc) => {
+					const item = document.createElement('li');
+					item.appendChild(document.createTextNode(loc));
+					locationList.appendChild(item);
+				});
 			}
 			request.open("POST", "/");
 			request.setRequestHeader("Content-type", "application/json");
@@ -42,10 +57,12 @@
 		<input type="submit" value="Start new game" \>
 	</form>
 	<hr>
-	<b>Location: </b>
+	<b id="locationTitle" class="hidden">Location: </b>
 	<span id="location"></span>
-	<br>
-	<b> Role: </b>
+	&nbsp;&nbsp;&nbsp;&nbsp;
+	<b id="roleTitle" class="hidden">Your role: </b>
 	<span id="role"></span>
+	<ol id="locations"></ol>
+
 </body>
 </html>
