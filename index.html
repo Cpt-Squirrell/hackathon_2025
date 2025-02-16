@@ -15,11 +15,27 @@
 			const lobby = document.getElementById("lobby").value;
 			const player = document.getElementById("player").value;
 			const contestants = document.getElementById("contestants").value;
+			
+			// Very simple input validation courtesy of ChatGPT    
+            if (!/^[\x30-\x7A]+$/.test(lobby)) {
+                alert("Invalid lobby name.");
+                return;
+            }
+
+            if (isNaN(contestants) || contestants < 3 || contestants > 12) {
+                alert("Number of contestants must be between 3 and 12.");
+                return;
+            }
+			
+			if (isNaN(player) || player < 1 || player > contestants) {
+                alert("Player number must be a number between 1 and the number of contestants.");
+                return;
+            }
+			
 			let request = new XMLHttpRequest();
 			request.onreadystatechange = function () {
 				if (request.readyState != XMLHttpRequest.DONE || request.status != 200) { return }
 				const data = JSON.parse(request.response);
-				console.log(data);
 				const newLobby = data.lobby;
 				const location = data.location;
 				const role = data.role;
@@ -32,7 +48,6 @@
 				document.getElementById("locationTitle").classList.remove("hidden");
 				document.getElementById("roleTitle").classList.remove("hidden");
 				const locationList = document.getElementById("locations");
-				console.log(locations);
 				locationList.innerHTML = "";
 				locations.forEach((loc) => {
 					const item = document.createElement('li');
