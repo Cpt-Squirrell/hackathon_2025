@@ -1,34 +1,69 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>Spyfall</title>
 	<style>
 		body {
-			padding: 5%;
+			padding: 3%;
+		}
+		
+		main {
+			margin: auto;
+			width: fit-content;
 		}
 		
 		.hidden {
 			display: none;
 		}
+		
+		.input {
+			display: inline-block;
+			margin: 2mm;
+		}
+		
+		#game {
+			font-size: small;
+			margin: auto;
+			width: 100%;
+			margin: 2mm;
+		}
+		
+		#placeinfo {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-around;
+			font-size: larger;
+		}
+		
+		#howto {
+			margin: 5mm;
+			flex-grow: 1;
+			width: 100%;
+			padding: 5mm;
+			max-width: 14cm;
+		}
 	</style>
 	<script>
 		function StartGame() {
 			const lobby = document.getElementById("lobby").value;
-			const player = document.getElementById("player").value;
-			const contestants = document.getElementById("contestants").value;
+			const player = new Number(document.getElementById("player").value);
+			const contestants = new Number(document.getElementById("contestants").value);
 			
-			// Very simple input validation courtesy of ChatGPT    
+			// Very simple input validation courtesy of ChatGPT
             if (!/^[\x30-\x7A]+$/.test(lobby)) {
                 alert("Invalid lobby name.");
                 return;
             }
 
-            if (isNaN(contestants) || contestants < 3 || contestants > 12) {
-                alert("Number of contestants must be between 3 and 12.");
+            if (isNaN(contestants) || contestants < 3) {
+                alert("Must have at least three players.\nRecommended maximum is 12.");
                 return;
             }
-			
+
 			if (isNaN(player) || player < 1 || player > contestants) {
-                alert("Player number must be a number between 1 and the number of contestants.");
+                alert("Your ID must be between 1 and total number of players.");
                 return;
             }
 			
@@ -40,6 +75,7 @@
 				const location = data.location;
 				const role = data.role;
 				const locations = data.locations;
+				const game = data.game;
 				const locationSpan = document.getElementById("location");
 				const roleSpan = document.getElementById("role");
 				locationSpan.innerText = location;
@@ -48,6 +84,8 @@
 				document.getElementById("locationTitle").classList.remove("hidden");
 				document.getElementById("roleTitle").classList.remove("hidden");
 				const locationList = document.getElementById("locations");
+				document.getElementById("game").getElementsByTagName("b")[0].innerText = "Now playing: ";
+				document.getElementById("game").getElementsByTagName("span")[0].innerText = game;
 				locationList.innerHTML = "";
 				locations.forEach((loc) => {
 					const item = document.createElement('li');
@@ -62,22 +100,52 @@
 
 	</script>
 </head>
-
 <body>
-	<h1>Spyfall</h1>
-	<form method="post" onsubmit="StartGame(); return false">
-		<input id="lobby" name="lobby" type="text" placeholder="Lobby ID" \>
-		<input id="player" name="player" type="text" placeholder="Player ID" \>
-		<input id="contestants" name="contestants" type="text" placeholder="Nr. of players" \>
-		<input type="submit" value="Start new game" \>
-	</form>
-	<hr>
-	<b id="locationTitle" class="hidden">Location: </b>
-	<span id="location"></span>
-	&nbsp;&nbsp;&nbsp;&nbsp;
-	<b id="roleTitle" class="hidden">Your role: </b>
-	<span id="role"></span>
-	<ol id="locations"></ol>
-
+	<main>
+		<h1>Spyfall</h1>
+		<details id="howto">
+			<summary><b>How to play</b></summary>
+			<p>
+				Spyfall is a social-deduction game similar to the popular game of Mafia or Town of Salem. At the start of the game all but one players are given a role (unique as long as there are more roles than players) and a location. One player is guarenteed however assigned the role of Spy and does not know the location. After game start players take turns to ask each other questions about the location they are at. Non-spy players want to ask vague enough questions about the location to not give away what the location is to the spy. At the same time an answer should be obvious enough to rat out the spy if the spy is unable to truthfully answer based on the location.
+			</p>
+			<p>
+				To start playing: All players enters the exact same lobby ID and number of players. Every player chooses a unique player ID starting from one up to total number of players. To start the game every player clicks Start Game.
+			</p>
+			<details style="margin: 3mm;">
+				<summary>Implementation details</summary>
+				<p>
+					Spyfall at spyfall.arcti.se implements a unique version of this game. There is no network connection between people's devices. To play a game everyone enters the <b>exact</b> same lobby ID and number of players and chooses a unique player ID starting from one. After everyone presses Start Game a random number generator is seeded the same on all devices using the lobby ID and a spy is selected. Assuming every player correctly entered a unique ID with no gaps between other player's ID then one spy is guarenteed. Custom locations are not possible currently since no synchronisation between devices is done but would be fun to add in the future.
+				</p>
+			</details>
+		</details>
+		<form method="post" onsubmit="StartGame(); return false">
+			<div class="input">
+				<label for="lobby">Lobby ID</label><br>
+				<input id="lobby" name="lobby" type="text" placeholder="Lobby ID" \>
+			</div>
+			<div class="input">
+				<label for="player">Player ID</label><br>
+				<input id="player" name="player" type="number" min="1" placeholder="Player ID" \>
+			</div>
+			<div class="input">
+				<label for="contestants">Nr. of players</label><br>
+				<input id="contestants" name="contestants" type="number" min="3" placeholder="Nr. of players" \>
+			</div>
+			<input type="submit" value="Start new game" \>
+		</form>
+		<hr style="width: 100%;">
+		<div id="game"><b></b><span></div>
+		<div id="placeinfo">
+			<span style="float: left;">
+				<b id="locationTitle" class="hidden">Location: </b>
+				<span id="location"></span>
+			</span>
+			<span style="float: right;">
+				<b id="roleTitle" class="hidden">Your role: </b>
+				<span id="role"></span>
+			</span>
+		</div>
+		<ol id="locations"></ol>
+	</main>
 </body>
 </html>
