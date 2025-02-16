@@ -11,7 +11,7 @@ app.get ( '/', (_, res) => res.sendFile(import.meta.dirname + "/index.html"));
 app.post( '/', StartGame);
 app.all ( '/teapot', (_, response) => response.sendStatus(418) );
 app.use ( (_, response) => response.sendStatus(404) );
-app.listen(3000);
+app.listen(80);
 
 // Generate new game from input
 function StartGame(request, response) {
